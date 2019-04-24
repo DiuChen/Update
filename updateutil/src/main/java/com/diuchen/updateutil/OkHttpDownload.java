@@ -1,5 +1,7 @@
 package com.diuchen.updateutil;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 
 import java.io.BufferedOutputStream;
@@ -27,6 +29,7 @@ public class OkHttpDownload {
     private DownloadListener downloadListener;
     private int progressInterval;
     private long lastProgressTime = 0;
+    private Handler handler;
 
     private OkHttpDownload(Builder builder) {
         this.url = builder.url;
@@ -34,6 +37,7 @@ public class OkHttpDownload {
         this.fileName = builder.fileName;
         this.downloadListener = builder.downloadListener;
         this.progressInterval = builder.progressInterval;
+        handler = new Handler(Looper.getMainLooper());
     }
 
     public void start() {
@@ -46,14 +50,13 @@ public class OkHttpDownload {
                 .enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        if (downloadListener != null) downloadListener.downloadFail(e.getMessage());
+                        uiDownloadFail(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.body() == null) {
-                            if (downloadListener != null)
-                                downloadListener.downloadFail("response.body() == null");
+                            uiDownloadFail("response.body() == null");
                             return;
                         }
                         if (fileName == null) {
@@ -64,8 +67,7 @@ public class OkHttpDownload {
                         File saveFile = new File(saveDir, fileName);
 
                         long length = response.body().contentLength();
-                        if (downloadListener != null)
-                            downloadListener.downloadStart(length);
+                        uiDownloadStart(length);
 
                         InputStream is = response.body().byteStream();
                         OutputStream os = null;
@@ -81,18 +83,16 @@ public class OkHttpDownload {
                                     long time = SystemClock.elapsedRealtime();
                                     if (time - lastProgressTime > progressInterval || allLen == length) {
                                         lastProgressTime = time;
-                                        downloadListener.downloadProgress((int) ((allLen / (double) length) * 100));
+                                        uiDownloadProgress((int) ((allLen / (double) length) * 100));
                                     }
                                 }
                             }
                             //必须先关闭流再回调下载完成 否则无法获取安装包信息
                             is.close();
                             os.close();
-                            if (downloadListener != null)
-                                downloadListener.downloadComplete(saveFile.getAbsolutePath());
+                            uiDownloadComplete(saveFile.getAbsolutePath());
                         } catch (IOException e) {
-                            if (downloadListener != null)
-                                downloadListener.downloadFail(e.getMessage());
+                            uiDownloadFail(e.getMessage());
                             e.printStackTrace();
                         } finally {
                             try {
@@ -106,6 +106,47 @@ public class OkHttpDownload {
                         }
                     }
                 });
+
+    }
+
+    private void uiDownloadStart(final long max) {
+        if (downloadListener == null) return;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                downloadListener.downloadStart(max);
+            }
+        });
+    }
+
+    private void uiDownloadProgress(final int progress) {
+        if (downloadListener == null) return;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                downloadListener.downloadProgress(progress);
+            }
+        });
+    }
+
+    private void uiDownloadComplete(final String path) {
+        if (downloadListener == null) return;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                downloadListener.downloadComplete(path);
+            }
+        });
+    }
+
+    private void uiDownloadFail(final String message) {
+        if (downloadListener == null) return;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                downloadListener.downloadFail(message);
+            }
+        });
     }
 
     private String getNameFromUrl(String url) {

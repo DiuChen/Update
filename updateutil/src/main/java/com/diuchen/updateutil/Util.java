@@ -18,10 +18,12 @@ public class Util {
     /**
      * 检查安装包 包名是否正确 是否大于当前版本
      *
-     * @param apkFilePath 安装包路径
+     * @param context        上下文
+     * @param apkFilePath    安装包路径
+     * @param newVersionCode 最新的版本号 如果为0 则以context提供的版本号为准
      * @return 是否符合要求
      */
-    public static boolean isNewApk(Context context, String apkFilePath) {
+    public static boolean isNewApk(Context context, String apkFilePath, long newVersionCode) {
         PackageManager packageManager = context.getPackageManager();
 
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
@@ -29,7 +31,7 @@ public class Util {
         String myPackageName = context.getPackageName();
         PackageInfo myPackageInfo = null;
         long versionCode;
-        long myVersionCode = -1;
+        long myVersionCode = 0;
         try {
             myPackageInfo = packageManager.getPackageInfo(myPackageName, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
@@ -43,7 +45,8 @@ public class Util {
             versionCode = packageInfo.versionCode;
             if (myPackageInfo != null) myVersionCode = myPackageInfo.versionCode;
         }
-        return packageInfo.packageName.equals(myPackageName) && myVersionCode >= 0 && versionCode > myVersionCode;
+        return packageInfo.packageName.equals(myPackageName) &&
+                newVersionCode > 0 ? versionCode == newVersionCode : versionCode > myVersionCode;
     }
 
     public static void installApp(Context context, File file) {

@@ -15,11 +15,12 @@ import java.io.File;
  * Date: 2019/4/18 17:20
  */
 public class UpdateUtil {
-
     private static final String TAG = "UpdateUtil";
     private static String APK_NAME = "newApp.apk";
     private Context context;
     private String url;
+    private long newVersionCode;
+    private boolean showNotification;
     private UpdateListener updateListener;
     private String savePath;
     private UpdateServer updateServer;
@@ -28,6 +29,8 @@ public class UpdateUtil {
     private UpdateUtil(Builder builder) {
         this.context = builder.context;
         this.url = builder.url;
+        this.newVersionCode = builder.newVersionCode;
+        this.showNotification = builder.showNotification;
         this.updateListener = builder.updateListener;
     }
 
@@ -40,7 +43,7 @@ public class UpdateUtil {
             savePath = upDateDir.getAbsolutePath();
             File apkFile = new File(upDateDir, APK_NAME);
             if (apkFile.exists()) {
-                if (Util.isNewApk(context, apkFile.getAbsolutePath())) {
+                if (Util.isNewApk(context, apkFile.getAbsolutePath(), newVersionCode)) {
                     Util.installApp(context, apkFile);
                     return;
                 }
@@ -60,7 +63,7 @@ public class UpdateUtil {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 UpdateServer.MyBinder binder = (UpdateServer.MyBinder) service;
                 updateServer = binder.getService();
-                updateServer.startDownload(url, savePath, APK_NAME, new UpdateListener() {
+                updateServer.startDownload(url, savePath, APK_NAME, newVersionCode, showNotification, new UpdateListener() {
                     @Override
                     public void upDateStart(long max) {
                         if (updateListener != null) updateListener.upDateStart(max);
@@ -95,8 +98,11 @@ public class UpdateUtil {
     }
 
     public static final class Builder {
+        public static final boolean DEFAULT_SHOW_NOTIFICATION = true;
         private Context context;
         private String url;
+        private long newVersionCode;
+        private boolean showNotification = DEFAULT_SHOW_NOTIFICATION;
         private UpdateListener updateListener;
 
         public Builder setActivity(Activity context) {
@@ -106,6 +112,16 @@ public class UpdateUtil {
 
         public Builder setUrl(String url) {
             this.url = url;
+            return this;
+        }
+
+        public Builder setNewVersionCode(long newVersionCode) {
+            this.newVersionCode = newVersionCode;
+            return this;
+        }
+
+        public Builder setShowNotification(boolean showNotification) {
+            this.showNotification = showNotification;
             return this;
         }
 
