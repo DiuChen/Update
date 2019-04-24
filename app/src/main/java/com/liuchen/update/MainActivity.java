@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 new UpdateUtil.Builder()
                         .setActivity(MainActivity.this)
                         .setUrl("https://my-test-1253832037.cos.ap-chengdu.myqcloud.com/app-release.apk")
-                        .setNewVersionCode(1)
+                        .setNewVersionCode(2)
                         .setUpdateListener(new UpdateUtil.UpdateListener() {
                             @Override
                             public void upDateStart(long max) {

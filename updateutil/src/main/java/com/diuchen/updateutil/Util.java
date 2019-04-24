@@ -46,7 +46,7 @@ public class Util {
             if (myPackageInfo != null) myVersionCode = myPackageInfo.versionCode;
         }
         return packageInfo.packageName.equals(myPackageName) &&
-                newVersionCode > 0 ? versionCode == newVersionCode : versionCode > myVersionCode;
+                (newVersionCode > 0 ? versionCode == newVersionCode : versionCode > myVersionCode);
     }
 
     public static void installApp(Context context, File file) {
