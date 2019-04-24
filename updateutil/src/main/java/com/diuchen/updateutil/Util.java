@@ -57,7 +57,7 @@ public class Util {
             data = Uri.fromFile(file);
         } else {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            String authority = "com.diuchen.okhttp.fileprovider";
+            String authority = context.getPackageName() + ".fileprovider";
             data = FileProvider.getUriForFile(context, authority, file);
         }
         intent.setDataAndType(data, type);
