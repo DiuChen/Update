@@ -9,3 +9,8 @@ allprojects {
     }
 }
 ```
+```
+dependencies {
+    implementation 'com.github.DiuChen:Update:1.0.1'
+}
+```
