@@ -37,7 +37,7 @@ public class UpdateServer extends Service {
         }
         //初始化通知
         builder = new NotificationCompat.Builder(this, UPDATE_CHANNEL);
-        builder.setSmallIcon(R.drawable.ic_launcher_round);
+        builder.setSmallIcon(R.drawable.ic_update);
     }
 
     @Override
