@@ -13,7 +13,7 @@ allprojects {
 在应用的build.gradle文件中配置:
 ```
 dependencies {
-    implementation 'com.github.DiuChen:Update:1.0.1'
+    implementation 'com.github.DiuChen:Update:1.0.2'
 }
 ```
 ## 基本使用
