@@ -1,12 +1,11 @@
 package com.diuchen.updateutil;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -15,7 +14,6 @@ import java.io.File;
  * Date: 2019/4/18 17:20
  */
 public class UpdateUtil {
-    private static final String TAG = "UpdateUtil";
     private static String APK_NAME = "newApp.apk";
     private Context context;
     private String url;
@@ -50,7 +48,7 @@ public class UpdateUtil {
             }
             apkDownload();
         } else {
-            Log.e(TAG, "start: 外部存储不可用");
+            Toast.makeText(context, "外部存储不可用", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -105,7 +103,7 @@ public class UpdateUtil {
         private boolean showNotification = DEFAULT_SHOW_NOTIFICATION;
         private UpdateListener updateListener;
 
-        public Builder setActivity(Activity context) {
+        public Builder setActivity(Context context) {
             this.context = context;
             return this;
         }
