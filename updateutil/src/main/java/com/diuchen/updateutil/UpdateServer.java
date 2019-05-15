@@ -75,12 +75,13 @@ public class UpdateServer extends Service {
 
                     @Override
                     public void downloadComplete(String path) {
-                        updateListener.upDateComplete(path);
                         if (showNotification) notificationManager.cancel(1);
                         File apkFile = new File(path);
                         if (Util.isNewApk(getApplicationContext(), apkFile.getAbsolutePath(), newVersionCode)) {
+                            updateListener.upDateComplete(path, true);
                             Util.installApp(getApplicationContext(), apkFile);
                         } else {
+                            updateListener.upDateComplete(path, false);
                             if (showNotification) {
                                 builder.setContentTitle("下载完成")
                                         .setContentText("安装包校验失败")

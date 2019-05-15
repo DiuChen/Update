@@ -73,8 +73,9 @@ public class UpdateUtil {
                     }
 
                     @Override
-                    public void upDateComplete(String path) {
-                        if (updateListener != null) updateListener.upDateComplete(path);
+                    public void upDateComplete(String path, boolean checkSuccess) {
+                        if (updateListener != null)
+                            updateListener.upDateComplete(path, checkSuccess);
                         context.unbindService(serviceConnection);
                     }
 
@@ -149,7 +150,7 @@ public class UpdateUtil {
         /**
          * 下载完成
          */
-        void upDateComplete(String path);
+        void upDateComplete(String path, boolean checkSuccess);
 
         /**
          * 请求失败
