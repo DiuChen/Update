@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void upDateComplete(String path, boolean checkSuccess) {
-                                logTv.setText("下载完成 路径:" + path);
+                                logTv.setText("下载完成 路径:" + path + "校验结果:" + checkSuccess);
                             }
 
                             @Override
