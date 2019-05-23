@@ -61,7 +61,7 @@ public class Util {
             data = FileProvider.getUriForFile(context, authority, file);
         }
         intent.setDataAndType(data, type);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }
