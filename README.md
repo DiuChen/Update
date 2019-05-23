@@ -13,7 +13,7 @@ allprojects {
 在应用的build.gradle文件中配置:
 ```
 dependencies {
-    implementation 'com.github.DiuChen:Update:1.0.2'
+    implementation 'com.github.DiuChen:Update:1.0.3'
 }
 ```
 ## 基本使用
@@ -32,8 +32,8 @@ new UpdateUtil.Builder()
                 logTv.setText("下载进度:" + progress);
             }
             @Override
-            public void upDateComplete(String path) {
-                logTv.setText("下载完成 路径:" + path);
+            public void upDateComplete(String path, boolean checkSuccess) {
+                logTv.setText("下载完成 路径:" + path + "校验结果:" + checkSuccess);
             }
             @Override
             public void upDateFail(String message) {
